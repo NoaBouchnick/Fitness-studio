@@ -23,9 +23,6 @@ public class Gym {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public Secretary getSecretary() {
         return secretary;
@@ -35,7 +32,9 @@ public class Gym {
         if (person instanceof Secretary) {
             this.secretary = (Secretary) person;
         } else {
-            this.secretary = new Secretary(person.getName(), balance, person.getGender(), person.getData());
+            if (Secretary.getCurrentSecretary() == null) {
+                this.secretary = new Secretary(person.getName(), balance, person.getGender(), person.getData());
+            }
         }
         this.balance = balance;
     }

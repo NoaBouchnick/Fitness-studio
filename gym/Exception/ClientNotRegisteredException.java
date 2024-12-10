@@ -10,13 +10,4 @@ public class ClientNotRegisteredException extends RuntimeException {
         super(message);
         this.client = client;
     }
-
-    public Client getClient() {
-        return client;
-    }
-
-    @Override
-    public String getMessage() {
-        return super.getMessage() + " for client: " + client.getName();
-    }
 }

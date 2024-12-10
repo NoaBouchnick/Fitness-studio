@@ -2,20 +2,24 @@ package gym.management.Sessions;
 
 public enum  SessionType {
 
-    ThaiBoxing("Advanced"),
-    MachinePilates("Intermediate"),
-    Pilates("Beginner"),
-    Ninja("Advanced");
+    ThaiBoxing(20,100),
+    MachinePilates(10,80),
+    Pilates(30,60),
+    Ninja(5,150);
 
-    private String requiredQualification;
+    private int maxCapacity;
+    private int price;
 
-    SessionType(String requiredQualification) {
-        this.requiredQualification = requiredQualification;
+    SessionType(int maxCapacity, int price) {
+        this.maxCapacity = maxCapacity;
+        this.price = price;
     }
 
-
-    public String getRequiredQualification() {
-        return requiredQualification;
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+    public int getPrice() {
+        return price;
     }
 }
 

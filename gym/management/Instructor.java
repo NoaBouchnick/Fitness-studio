@@ -1,30 +1,32 @@
 package gym.management;
 
-import gym.Exception.InstructorNotQualifiedException;
-import gym.customers.Person;
-import gym.customers.Gender;
-import gym.management.Sessions.SessionType;
+import gym.Exception.*;
+import gym.customers.*;
+import gym.management.Sessions.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Instructor extends Person {
-    private ArrayList<SessionType> sessions;
+    private List<SessionType> instructorSessions = new ArrayList<>();
 
-    public Instructor(String name, int financialBalance, Gender gender, String data, ArrayList<SessionType> sessions) {
-        super(name, financialBalance, gender, data);
-        this.sessions = sessions;
+
+    public Instructor(String name, int moneyBalance, Gender gender, String data, List<SessionType> instructorSessions) {
+        super(name, moneyBalance, gender, data);
+        this.instructorSessions = instructorSessions == null ? new ArrayList<>() : instructorSessions;
     }
 
-    public ArrayList<SessionType> getSessions() {
-        return sessions;
+    public List<SessionType> getInstructorSessions() {
+        return Collections.unmodifiableList(instructorSessions);
     }
 
-    public boolean isQualifiedForSession(SessionType requestedSessionType) throws InstructorNotQualifiedException {
-        if (!sessions.contains(requestedSessionType)) {
+
+    public boolean mayTeach(SessionType requestedSessionType) throws InstructorNotQualifiedException {
+        if (!instructorSessions.contains(requestedSessionType)) {
             throw new InstructorNotQualifiedException(
                     "Instructor is not qualified for session: " + requestedSessionType,
-                    this,
-                    requestedSessionType
+                    this, requestedSessionType
             );
         }
         return true;
