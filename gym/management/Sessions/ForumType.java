@@ -1,4 +1,4 @@
-package gym.management;
+package gym.management.Sessions;
 
 public enum ForumType {
     All("All genders"),

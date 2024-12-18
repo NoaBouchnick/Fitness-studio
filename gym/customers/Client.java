@@ -1,7 +1,9 @@
 package gym.customers;
 
+import gym.management.Sessions.ForumType;
 import gym.management.Sessions.Session;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Objects;
 public class Client extends Person {
     private List<String> notifications = new ArrayList<>();
     private List<Session> mySessions = new ArrayList<>();
+    private ForumType clientType;
 
     public Client(String name, int accountBalance, Gender gender, String data,
                   List<String> notifications, List<Session> mySessions) {
@@ -25,10 +28,17 @@ public class Client extends Person {
     public void addNotification(String notification) {
         this.notifications.add(notification);
     }
+
     public void addSessionClient(Session session) {
         this.mySessions.add(session);
     }
 
+    public List<Session> getMySessions() {
+        return mySessions;
+    }
+    public ForumType getClientType() {
+        return clientType;
+    }
 
     public List<String> getNotifications() {
         return Collections.unmodifiableList(notifications);
@@ -41,6 +51,7 @@ public class Client extends Person {
         setMoneyBalance(getMoneyBalance() - money);
         return getMoneyBalance();
     }
+
 
     @Override
     public boolean equals(Object o) {

@@ -10,7 +10,11 @@ public class Gym {
 
     private static Gym instance;
 
-    private Gym() {}
+    private Gym() {
+        if (instance != null) {
+            throw new IllegalStateException("Gym already initialized");
+        }
+    }
 
     public static Gym getInstance() {
         if (instance == null) {
@@ -29,14 +33,19 @@ public class Gym {
     }
 
     public void setSecretary(Person person, int balance) {
-        if (person instanceof Secretary) {
-            this.secretary = (Secretary) person;
-        } else {
-            if (Secretary.getCurrentSecretary() == null) {
+        try {
+            if (Secretary.getCurrentSecretary() != null) {
+                Secretary.getCurrentSecretary().deactivate();
+            }
+            if (person instanceof Secretary) {
+                this.secretary = (Secretary) person;
+            } else {
                 this.secretary = new Secretary(person.getName(), balance, person.getGender(), person.getData());
             }
+            this.balance = balance;
+        } catch (IllegalStateException e) {
+            System.out.println("Error: Former secretaries are not permitted to perform actions");
         }
-        this.balance = balance;
     }
 
     @Override

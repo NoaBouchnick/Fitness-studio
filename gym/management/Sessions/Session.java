@@ -3,46 +3,59 @@ package gym.management.Sessions;
 import gym.customers.*;
 import gym.management.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Session {
+public abstract class Session {
 
-    private SessionType sessionType;
-    private String data;
-    private ForumType forumType;
-    private Instructor instructor;
-    private List<Client> lientsInSession;
-
+    private final SessionType sessionType;
+    private final LocalDateTime sessionDate; // changed from String to LocalDateTime
+    private final ForumType forumType;
+    private final Instructor instructor;
+    private final List<Client> clientsInSession;
 
     public Session(SessionType sessionType, String data, ForumType forumType, Instructor instructor) {
         this.sessionType = sessionType;
-        this.data = data;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        this.sessionDate = LocalDateTime.parse(data, formatter); // converting String to LocalDateTime
         this.forumType = forumType;
         this.instructor = instructor;
-        this.lientsInSession = new ArrayList<>();
+        this.clientsInSession = new ArrayList<>();
     }
-
 
     public SessionType getSessionType() {
         return sessionType;
     }
 
-    public List<Client> getLientsInSession() {
-        return lientsInSession;
+    public ForumType getForumType() {
+        return forumType;
     }
 
+    public LocalDateTime getSessionDate() {
+        return sessionDate;
+    }
+
+    public List<Client> getClientsInSession() {
+        return clientsInSession;
+    }
+
+    public abstract int getPrice();
+
+    public abstract int getMaxCapacity();
+
     public boolean isFull() {
-        return lientsInSession.size() >= sessionType.getMaxCapacity();
+        return getClientsInSession().size() >= getMaxCapacity();
     }
-    public boolean addClient(Client client) {
+
+    public void addClient(Client client) {
         if (!isFull()) {
-            lientsInSession.add(client);
-            return true;
+            getClientsInSession().add(client);
         }
-        return false;
     }
-    public int getPrice() {
-        return sessionType.getPrice();
+
+    public Instructor getInstructor() {
+        return instructor;
     }
 }
