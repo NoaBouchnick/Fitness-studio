@@ -126,7 +126,7 @@ public class Secretary extends Person {
 
         try {
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime parsedDateTime = LocalDateTime.parse(data, inputFormatter);
             String formattedDate = parsedDateTime.format(outputFormatter);
 

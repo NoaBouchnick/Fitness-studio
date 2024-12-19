@@ -18,7 +18,7 @@ public abstract class Session {
 
     public Session(SessionType sessionType, String data, ForumType forumType, Instructor instructor) {
         this.sessionType = sessionType;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         this.sessionDate = LocalDateTime.parse(data, formatter); // converting String to LocalDateTime
         this.forumType = forumType;
         this.instructor = instructor;
