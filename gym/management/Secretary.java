@@ -4,6 +4,7 @@ import gym.Exception.*;
 import gym.customers.*;
 import gym.management.Sessions.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -227,7 +228,7 @@ public class Secretary extends Person {
             totalPayment += salary;
         }
 
-        actionsHistory.add("Total salaries paid: " + totalPayment);
+        actionsHistory.add("Salaries have been paid to all employees");
         return totalPayment;
     }
 
@@ -238,25 +239,36 @@ public class Secretary extends Person {
     }
 
     public void notify(Session session, String message) {
-        String notification = "Notification for session " + session.getSessionType() + ": " + message;
+        String notification = "The instructor will be a few minutes late for the session, Heavy traffic reported around the gym today. Plan ahead to avoid missing your session!, Happy New Year to all our valued clients! "
+                 + ": " + message;
         for (Client client : session.getClientsInSession()) {
             client.addNotification(notification);
         }
-        actionsHistory.add("A message was sent to everyone registered for session " + session.getSessionType() + " on " + session.getSessionDate() + ": " + message);
+        actionsHistory.add("A message was sent to everyone registered for session " + session.getSessionType() + " on " + session.getSessionDate() + " : " + message);
     }
 
     public void notify(String date, String message) {
-        String notification = "Notification for date " + date + ": " + message;
-        for (Client client : clients) {
-            client.addNotification(notification + "\n");
+        try {
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate parsedDate = LocalDate.parse(date, inputFormatter);
+            String formattedDate = parsedDate.format(outputFormatter);
+
+            String notification = "Notification for date " + formattedDate + ": " + message;
+            for (Client client : clients) {
+                client.addNotification(notification + "\n");
+            }
+            actionsHistory.add("A message was sent to everyone registered for a session on " + formattedDate + " : " + message);
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please use dd-MM-yyyy format.");
         }
-        actionsHistory.add("Notification sent for date " + date + ": " + message + "\n");
     }
+
 
     public void notify(String message) {
         for (Client client : clients) {
             client.addNotification("General notification: " + message + "\n");
         }
-        actionsHistory.add("General notification sent to all clients: " + message + "\n");
+        actionsHistory.add("A message was sent to all gym clients: " + message);
     }
 }
