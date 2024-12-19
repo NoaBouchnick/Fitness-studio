@@ -143,7 +143,6 @@ public class Secretary extends Person {
         }
         return null;
     }
-
     public boolean registerClientToLesson(Client c, Session session) {
         try {
             if (!isAuthorized()) {
@@ -156,10 +155,12 @@ public class Secretary extends Person {
                 throw new DuplicateClientException("The client is already registered for this lesson", c);
             }
             if (session.getSessionDate().isBefore(LocalDateTime.now())) {
+                actionsHistory.add("Failed registration: Session is not in the future");
                 return false;
             }
             int sessionPrice = session.getPrice();
             if (c.getMoneyBalance() < sessionPrice) {
+                actionsHistory.add("Failed registration: Client doesn't have enough balance");
                 throw new IllegalArgumentException("Client " + c.getName() + " does not have enough balance. Required: " + sessionPrice + ", Available: " + c.getMoneyBalance());
             }
             for (Instructor instructor : instructors) {
@@ -168,6 +169,7 @@ public class Secretary extends Person {
                 }
             }
             if (session.isFull()) {
+                actionsHistory.add("Failed registration: No available spots for session");
                 throw new IllegalStateException("The session " + session.getSessionType() + " is already full.");
             }
             ForumType forumType = session.getForumType();
@@ -176,26 +178,31 @@ public class Secretary extends Person {
                     break;
                 case Seniors:
                     if (c.getAge() < 65) {
+                        actionsHistory.add("Failed registration: Client doesn't meet the age requirements for this session (Seniors)");
                         return false;
                     }
                     break;
                 case Male:
                     if (c.getGender() != Gender.Male) {
+                        actionsHistory.add("Failed registration: Client's gender doesn't match the session's gender requirements (expected Male).");
                         return false;
                     }
                     break;
                 case Female:
                     if (c.getGender() != Gender.Female) {
+                        actionsHistory.add("Failed registration: Client's gender doesn't match the session's gender requirements (expected Female).");
                         return false;
                     }
                     break;
             }
-
             session.addClient(c);
             c.deductMoney(sessionPrice);
             c.addSessionClient(session);
-            actionsHistory.add("Registered client: " + c.getName() + " to session: " +
-                    session.getSessionType() + " on " + session.getSessionDate() + " for price: " + session.getPrice());
+
+            actionsHistory.add("Registered client: " + c.getName() +
+                    " to session: " + session.getSessionType() +
+                    " on " + session.getSessionDate() +
+                    " for price: " + session.getPrice()); // Log the action
             return true;
 
         } catch (Exception e) {
@@ -203,6 +210,7 @@ public class Secretary extends Person {
             return false;
         }
     }
+
 
 
     public int paySalaries() {
@@ -234,7 +242,7 @@ public class Secretary extends Person {
         for (Client client : session.getClientsInSession()) {
             client.addNotification(notification);
         }
-        actionsHistory.add("Notification sent to clients in session " + session.getSessionType() + ": " + message + "\n");
+        actionsHistory.add("A message was sent to everyone registered for session " + session.getSessionType() + " on " + session.getSessionDate() + ": " + message);
     }
 
     public void notify(String date, String message) {
@@ -251,5 +259,4 @@ public class Secretary extends Person {
         }
         actionsHistory.add("General notification sent to all clients: " + message + "\n");
     }
-
 }
