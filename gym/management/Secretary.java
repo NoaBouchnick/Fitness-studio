@@ -257,8 +257,10 @@ public class Secretary extends Person {
 
             totalPayment += salary;
         }
+            int secretarySalary = getSalary();
+            totalPayment += secretarySalary;
+            setMoneyBalance(getMoneyBalance() + secretarySalary);
 
-        // עדכון יתרת חדר הכושר
         Gym gym = Gym.getInstance();
         if (gym.getBalance() >= totalPayment) {
             gym.setBalance(gym.getBalance() - totalPayment);

@@ -91,7 +91,7 @@ public class Gym {
 
         // Clients Data
         builder.append("\nClients Data:\n");
-        if (secretary != null && !secretary.getClients().isEmpty()) {
+        if (!secretary.getClients().isEmpty()) {
             for (Client client : secretary.getClients()) {
                 builder.append(client.toString()).append("\n");
             }
@@ -101,5 +101,4 @@ public class Gym {
 
         return builder.toString();
     }
-
 }
