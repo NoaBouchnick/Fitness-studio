@@ -12,6 +12,9 @@ public class Person {
     private String data;
     private Gender gender;
     private int age;
+    private static int idCounter = 1062;
+    private int id;
+
 
     public Person(String name, int moneyBalance, Gender gender, String data) {
         this.name = name;
@@ -19,8 +22,12 @@ public class Person {
         this.data = data;
         this.gender = gender;
         this.age = calculateAgeFromData(data);
+        this.id = idCounter++;
     }
 
+    public int getId() {
+        return id;
+    }
 
     private int calculateAgeFromData(String data) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");

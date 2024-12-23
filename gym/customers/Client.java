@@ -3,7 +3,6 @@ package gym.customers;
 import gym.management.Sessions.ForumType;
 import gym.management.Sessions.Session;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +12,7 @@ public class Client extends Person {
     private List<String> notifications = new ArrayList<>();
     private List<Session> mySessions = new ArrayList<>();
     private ForumType clientType;
+
 
     public Client(String name, int accountBalance, Gender gender, String data,
                   List<String> notifications, List<Session> mySessions) {
@@ -68,4 +68,12 @@ public class Client extends Person {
     public int hashCode() {
         return Objects.hash(super.hashCode(), notifications, mySessions);
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + getId() + " | Name: " + getName() + " | Gender: " + getGender() +
+                " | Birthday: " + getData() + " | Age: " + getAge() +
+                " | Balance: " + getMoneyBalance();
+    }
+
 }

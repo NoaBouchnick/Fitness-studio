@@ -1,5 +1,6 @@
 package gym.management;
 
+import gym.customers.Client;
 import gym.customers.Person;
 
 public class Gym {
@@ -42,12 +43,9 @@ public class Gym {
 
     public void setSecretary(Person person, int balance) {
         try {
-            // 1) ביטול המזכירה הקודמת אם קיימת
             if (this.secretary != null) {
                 this.secretary.deactivate();
             }
-
-            // 2) אם person כבר Secretary, השתמש בו; אחרת צור מזכירה חדשה
             if (person instanceof Secretary) {
                 this.secretary = (Secretary) person;
             } else {
@@ -58,26 +56,50 @@ public class Gym {
                         person.getData()
                 );
             }
-
-            // 3) עדכן את ה־currentSecretary הסטטי במחלקת Secretary
             Secretary.setCurrentSecretary(this.secretary);
-
-            // 4) עדכן את יתרת המכון
             this.balance = balance;
 
-            // 5) הוספת הודעה להיסטוריה של המזכירה החדשה
             this.secretary.addActionToHistory(
                     "A new secretary has started working at the gym: " + this.secretary.getName()
             );
 
         } catch (IllegalStateException e) {
-            // במקרה שיש בעיה בהחלפה
             System.out.println("Error: Former secretaries are not permitted to perform actions");
         }
     }
 
     @Override
     public String toString() {
-        return "Gym Name: " + name + ", Balance: " + balance + ", Secretary: " + (secretary != null ? secretary.getName() : "None");
+        StringBuilder builder = new StringBuilder();
+
+        // Gym Details
+        builder.append("Gym Name: ").append(name).append("\n");
+        builder.append("Gym Secretary: ");
+
+        if (secretary != null) {
+            builder.append("ID: ").append(secretary.getId())
+                    .append(" | Name: ").append(secretary.getName())
+                    .append(" | Gender: ").append(secretary.getGender())
+                    .append(" | Birthday: ").append(secretary.getData())
+                    .append(" | Age: ").append(secretary.getAge())
+                    .append(" | Role: Secretary | Salary per Month: ").append(secretary.getSalary());
+        } else {
+            builder.append("None");
+        }
+
+        builder.append("\nGym Balance: ").append(balance).append("\n");
+
+        // Clients Data
+        builder.append("\nClients Data:\n");
+        if (secretary != null && !secretary.getClients().isEmpty()) {
+            for (Client client : secretary.getClients()) {
+                builder.append(client.toString()).append("\n");
+            }
+        } else {
+            builder.append("No clients available\n");
+        }
+
+        return builder.toString();
     }
+
 }

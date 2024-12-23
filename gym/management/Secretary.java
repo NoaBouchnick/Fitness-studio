@@ -20,10 +20,17 @@ public class Secretary extends Person {
     private static List<String> actionsHistory = new ArrayList<>();
     private static   Secretary currentSecretary = null;
     private boolean isActive = true;
+    private int salary;
 
     public Secretary(String name, int wage, Gender gender, String date) {
         super(name, wage, gender, date);
+        this.salary = salary;
     }
+
+    public int getSalary() {
+        return salary;
+    }
+
     public void deactivate() {
         isActive = false;
     }
@@ -36,6 +43,9 @@ public class Secretary extends Person {
         return true;
     }
 
+    public List<Client> getClients() {
+        return clients;
+    }
 
     public static Secretary getCurrentSecretary() {
         return Gym.getInstance().getSecretary();
@@ -234,7 +244,6 @@ public class Secretary extends Person {
         }
     }
 
-
     public int paySalaries() {
         int totalPayment = 0;
 
@@ -242,13 +251,23 @@ public class Secretary extends Person {
             int numOfSessions = instructor.getSessionsTaught().size();
             int hourlyWage = instructor.getHourlyWage();
 
+            // חישוב השכר של המדריך
             int salary = numOfSessions * hourlyWage;
             instructor.setMoneyBalance(instructor.getMoneyBalance() + salary);
 
             totalPayment += salary;
         }
 
-        actionsHistory.add("Salaries have been paid to all employees");
+        // עדכון יתרת חדר הכושר
+        Gym gym = Gym.getInstance();
+        if (gym.getBalance() >= totalPayment) {
+            gym.setBalance(gym.getBalance() - totalPayment);
+            actionsHistory.add("Salaries have been paid to all employees");
+        } else {
+            actionsHistory.add("Failed to pay salaries: Not enough balance in the gym account.");
+            return 0;
+        }
+
         return totalPayment;
     }
 
@@ -259,36 +278,56 @@ public class Secretary extends Person {
     }
 
     public void notify(Session session, String message) {
-        String notification = "The instructor will be a few minutes late for the session, Heavy traffic reported around the gym today. Plan ahead to avoid missing your session!, Happy New Year to all our valued clients! "
-                + ": " + message;
-        for (Client client : session.getClientsInSession()) {
-            client.addNotification(notification);
+        if (!isAuthorized()) {
+            return;
         }
-        actionsHistory.add("A message was sent to everyone registered for session " + session.getSessionType() + " on " + session.getSessionDate() + " : " + message);
+
+        for (Client client : session.getClientsInSession()) {
+            client.addNotification(message);
+        }
+
+        actionsHistory.add("A message was sent to everyone registered for session "
+                + session.getSessionType() + " on " + session.getSessionDate() + " : " + message);
     }
 
     public void notify(String date, String message) {
+        if (!isAuthorized()) {
+            return;
+        }
+
         try {
+            // פירמוט התאריך
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate parsedDate = LocalDate.parse(date, inputFormatter);
             String formattedDate = parsedDate.format(outputFormatter);
 
-            String notification = "Notification for date " + formattedDate + ": " + message;
             for (Client client : clients) {
-                client.addNotification(notification + "\n");
+                client.addNotification(message);
             }
+
             actionsHistory.add("A message was sent to everyone registered for a session on " + formattedDate + " : " + message);
+
         } catch (DateTimeParseException e) {
             System.out.println("Invalid date format. Please use dd-MM-yyyy format.");
         }
     }
 
-
     public void notify(String message) {
-        for (Client client : clients) {
-            client.addNotification("General notification: " + message + "\n");
+        if (!isAuthorized()) {
+            return;
         }
+
+        for (Client client : clients) {
+            client.addNotification(message);
+        }
+
         actionsHistory.add("A message was sent to all gym clients: " + message);
+    }
+    @Override
+    public String toString() {
+        return "ID: " + getId() + " | Name: " + getName() + " | Gender: " + getGender() +
+                " | Birthday: " + getData() + " | Age: " + getAge() +
+                " | Salary per Month: " + salary;
     }
 }
