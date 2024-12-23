@@ -177,6 +177,7 @@ public class Secretary extends Person {
 
             if (session.isFull()) {
                 actionsHistory.add("Failed registration: No available spots for session");
+                return false;
             }
             ForumType forumType = session.getForumType();
             switch (forumType) {
@@ -204,6 +205,9 @@ public class Secretary extends Person {
             session.addClient(c);
             c.deductMoney(sessionPrice);
             c.addSessionClient(session);
+
+            Gym gym = Gym.getInstance();
+            gym.setBalance(gym.getBalance() + sessionPrice);
 
             actionsHistory.add("Registered client: " + c.getName() +
                     " to session: " + session.getSessionType() +

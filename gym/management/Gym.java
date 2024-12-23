@@ -6,7 +6,7 @@ public class Gym {
 
     private String name;
     private Secretary secretary;
-    private int balance;
+    private int balance = 0;
 
     private static Gym instance;
 
@@ -21,6 +21,14 @@ public class Gym {
             instance = new Gym();
         }
         return instance;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
 
     public void setName(String name) {
