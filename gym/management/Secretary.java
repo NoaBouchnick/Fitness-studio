@@ -144,6 +144,7 @@ public class Secretary extends Person {
         }
         return null;
     }
+
     public boolean registerClientToLesson(Client c, Session session) {
         try {
             if (!isAuthorized()) {
@@ -165,13 +166,17 @@ public class Secretary extends Person {
                 throw new IllegalArgumentException("Client " + c.getName() + " does not have enough balance. Required: " + sessionPrice + ", Available: " + c.getMoneyBalance());
             }
             for (Instructor instructor : instructors) {
-                if (instructor.getName().equals(c.getName()) && instructor.isTeachingAtTime(session.getSessionDate())) {
-                    return false;
+                if (instructor.getName().equals(c.getName())) {
+                    if (instructor.isTeachingAtTime(session.getSessionDate())) {
+                        if (!session.getInstructor().getName().equals(c.getName())) {
+                            break;
+                        }
+                    }
                 }
             }
+
             if (session.isFull()) {
                 actionsHistory.add("Failed registration: No available spots for session");
-                throw new IllegalStateException("The session " + session.getSessionType() + " is already full.");
             }
             ForumType forumType = session.getForumType();
             switch (forumType) {
@@ -211,7 +216,6 @@ public class Secretary extends Person {
             return false;
         }
     }
-
 
 
     public int paySalaries() {
