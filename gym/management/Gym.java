@@ -42,16 +42,36 @@ public class Gym {
 
     public void setSecretary(Person person, int balance) {
         try {
-            if (Secretary.getCurrentSecretary() != null) {
-                Secretary.getCurrentSecretary().deactivate();
+            // 1) ביטול המזכירה הקודמת אם קיימת
+            if (this.secretary != null) {
+                this.secretary.deactivate();
             }
+
+            // 2) אם person כבר Secretary, השתמש בו; אחרת צור מזכירה חדשה
             if (person instanceof Secretary) {
                 this.secretary = (Secretary) person;
             } else {
-                this.secretary = new Secretary(person.getName(), balance, person.getGender(), person.getData());
+                this.secretary = new Secretary(
+                        person.getName(),
+                        balance,
+                        person.getGender(),
+                        person.getData()
+                );
             }
+
+            // 3) עדכן את ה־currentSecretary הסטטי במחלקת Secretary
+            Secretary.setCurrentSecretary(this.secretary);
+
+            // 4) עדכן את יתרת המכון
             this.balance = balance;
+
+            // 5) הוספת הודעה להיסטוריה של המזכירה החדשה
+            this.secretary.addActionToHistory(
+                    "A new secretary has started working at the gym: " + this.secretary.getName()
+            );
+
         } catch (IllegalStateException e) {
+            // במקרה שיש בעיה בהחלפה
             System.out.println("Error: Former secretaries are not permitted to perform actions");
         }
     }

@@ -17,36 +17,43 @@ public class Secretary extends Person {
     private List<Client> clients = new ArrayList<>();
     private List<Instructor> instructors = new ArrayList<>();
     private List<Session> sessions = new ArrayList<>();
-    private List<String> actionsHistory = new ArrayList<>();
+    private static List<String> actionsHistory = new ArrayList<>();
     private static   Secretary currentSecretary = null;
     private boolean isActive = true;
 
     public Secretary(String name, int wage, Gender gender, String date) {
         super(name, wage, gender, date);
-        if (currentSecretary != null) {
-            throw new IllegalStateException("Only one secretary is allowed.");
-        }
-        currentSecretary = this;
-        actionsHistory.add("A new secretary has started working at the gym: " + getName());
     }
     public void deactivate() {
         isActive = false;
     }
 
     private boolean isAuthorized() {
-        return isActive && Secretary.getCurrentSecretary() == this;
+        if (!isActive || Secretary.getCurrentSecretary() != this) {
+            System.out.println("Error: Former secretaries are not permitted to perform actions");
+            return false;
+        }
+        return true;
     }
+
 
     public static Secretary getCurrentSecretary() {
         return Gym.getInstance().getSecretary();
     }
 
+    public void addActionToHistory(String action) {
+        actionsHistory.add(action);
+    }
+
+    public static void setCurrentSecretary(Secretary currentSecretary) {
+        Secretary.currentSecretary = currentSecretary;
+    }
+
     public Client registerClient(Person p) throws InvalidAgeException, DuplicateClientException {
+        if (!isAuthorized()) {
+            return null;
+        }
         try {
-            if (!isAuthorized()) {
-                System.out.println("Unauthorized action: This secretary is no longer active.");
-                return null;
-            }
             if (p.getAge() < 18) {
                 throw new InvalidAgeException("Client age must be 18 or older", p.getAge());
             }
@@ -70,11 +77,10 @@ public class Secretary extends Person {
     }
 
     public void unregisterClient(Client c) {
+        if (!isAuthorized()) {
+            return;
+        }
         try {
-            if (!isAuthorized()) {
-                System.out.println("Unauthorized action: This secretary is no longer active.");
-                return;
-            }
             if (!clients.contains(c)) {
                 throw new ClientNotRegisteredException("Registration is required before attempting to unregister", c);
             }
@@ -90,10 +96,10 @@ public class Secretary extends Person {
 
 
     public Instructor hireInstructor(Person p, int hourlyWage, List<SessionType> sessions) {
+        if (!isAuthorized()) {
+            return null;
+        }
         try {
-            if (!isAuthorized()) {
-                return null;
-            }
             if (sessions == null || sessions.isEmpty()) {
                 throw new IllegalArgumentException("Instructor must be qualified for at least one session.");
             }
@@ -113,10 +119,10 @@ public class Secretary extends Person {
 
     public Session addSession(SessionType sessionType, String data, ForumType forumType, Instructor instructor)
             throws InstructorNotQualifiedException {
+        if (!isAuthorized()) {
+            return null;
+        }
         try {
-            if (!isAuthorized()) {
-                return null;
-            }
             if (!instructor.mayTeach(sessionType)) {
                 throw new InstructorNotQualifiedException("Error: Instructor is not qualified to conduct this session type.");
             }
@@ -146,10 +152,12 @@ public class Secretary extends Person {
     }
 
     public boolean registerClientToLesson(Client c, Session session) {
+        if (!isAuthorized()) {
+            return false;
+        }
+        boolean canRister = true;
         try {
-            if (!isAuthorized()) {
-                return false;
-            }
+
             if (!clients.contains(c)) {
                 throw new ClientNotRegisteredException("The client is not registered with the gym and cannot enroll in lessons", c);
             }
@@ -158,13 +166,10 @@ public class Secretary extends Person {
             }
             if (session.getSessionDate().isBefore(LocalDateTime.now())) {
                 actionsHistory.add("Failed registration: Session is not in the future");
-                return false;
+                canRister = false;
             }
             int sessionPrice = session.getPrice();
-            if (c.getMoneyBalance() < sessionPrice) {
-                actionsHistory.add("Failed registration: Client doesn't have enough balance");
-                throw new IllegalArgumentException("Client " + c.getName() + " does not have enough balance. Required: " + sessionPrice + ", Available: " + c.getMoneyBalance());
-            }
+
             for (Instructor instructor : instructors) {
                 if (instructor.getName().equals(c.getName())) {
                     if (instructor.isTeachingAtTime(session.getSessionDate())) {
@@ -186,21 +191,29 @@ public class Secretary extends Person {
                 case Seniors:
                     if (c.getAge() < 65) {
                         actionsHistory.add("Failed registration: Client doesn't meet the age requirements for this session (Seniors)");
-                        return false;
+                        canRister = false;
                     }
                     break;
                 case Male:
                     if (c.getGender() != Gender.Male) {
-                        actionsHistory.add("Failed registration: Client's gender doesn't match the session's gender requirements (expected Male).");
-                        return false;
+                        actionsHistory.add("Failed registration: Client's gender doesn't match the session's gender requirements");
+                        canRister = false;
                     }
                     break;
                 case Female:
                     if (c.getGender() != Gender.Female) {
-                        actionsHistory.add("Failed registration: Client's gender doesn't match the session's gender requirements (expected Female).");
-                        return false;
+                        actionsHistory.add("Failed registration: Client's gender doesn't match the session's gender requirements");
+                        canRister = false;
                     }
                     break;
+            }
+
+            if (c.getMoneyBalance() < sessionPrice) {
+                actionsHistory.add("Failed registration: Client doesn't have enough balance");
+                canRister = false;
+            }
+            if (!canRister) {
+                return false;
             }
             session.addClient(c);
             c.deductMoney(sessionPrice);
@@ -223,7 +236,6 @@ public class Secretary extends Person {
 
 
     public int paySalaries() {
-//        ensureActiveSecretary();
         int totalPayment = 0;
 
         for (Instructor instructor : instructors) {
@@ -248,7 +260,7 @@ public class Secretary extends Person {
 
     public void notify(Session session, String message) {
         String notification = "The instructor will be a few minutes late for the session, Heavy traffic reported around the gym today. Plan ahead to avoid missing your session!, Happy New Year to all our valued clients! "
-                 + ": " + message;
+                + ": " + message;
         for (Client client : session.getClientsInSession()) {
             client.addNotification(notification);
         }
