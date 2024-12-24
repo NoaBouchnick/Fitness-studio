@@ -14,9 +14,9 @@ import java.util.List;
 
 public class Secretary extends Person {
 
-    private List<Client> clients = new ArrayList<>();
+    private static List<Client> clients = new ArrayList<>();
     private List<Instructor> instructors = new ArrayList<>();
-    private List<Session> sessions = new ArrayList<>();
+    private static List<Session> sessions = new ArrayList<>();
     private static List<String> actionsHistory = new ArrayList<>();
     private static   Secretary currentSecretary = null;
     private boolean isActive = true;
@@ -45,6 +45,10 @@ public class Secretary extends Person {
 
     public List<Client> getClients() {
         return clients;
+    }
+
+    public static List<Session> getSessions() {
+        return sessions;
     }
 
     public static Secretary getCurrentSecretary() {

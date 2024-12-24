@@ -2,6 +2,7 @@ package gym.management;
 
 import gym.customers.Client;
 import gym.customers.Person;
+import gym.management.Sessions.Session;
 
 public class Gym {
 
@@ -91,12 +92,27 @@ public class Gym {
 
         // Clients Data
         builder.append("\nClients Data:\n");
-        if (!secretary.getClients().isEmpty()) {
+        if (secretary != null && !secretary.getClients().isEmpty()) {
             for (Client client : secretary.getClients()) {
                 builder.append(client.toString()).append("\n");
             }
         } else {
             builder.append("No clients available\n");
+        }
+
+        // Sessions Data
+        builder.append("\nSessions Data:\n");
+        if (secretary != null && secretary.getSessions() != null && !secretary.getSessions().isEmpty()) {
+            for (Session session : secretary.getSessions()) {
+                builder.append("Session Type: ").append(session.getSessionType())
+                        .append(" | Date: ").append(session.getSessionDate())
+                        .append(" | Forum: ").append(session.getForumType())
+                        .append(" | Instructor: ").append(session.getInstructor())
+                        .append(" | Participants: ").append(session.getPrice())
+                        .append("/").append(session.getMaxCapacity()).append("\n");
+            }
+        } else {
+            builder.append("No sessions available\n");
         }
 
         return builder.toString();
