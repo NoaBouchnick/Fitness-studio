@@ -12,7 +12,7 @@ public class Person {
     private String data;
     private Gender gender;
     private int age;
-    private static int idCounter = 1062;
+    private static int idCounter = 1112;
     private int id;
 
 
@@ -22,7 +22,11 @@ public class Person {
         this.data = data;
         this.gender = gender;
         this.age = calculateAgeFromData(data);
-        this.id = idCounter++;
+        this.id = idCounter;
+    }
+
+    public synchronized static int getIdCounter() {
+        return idCounter++;
     }
 
     public int getId() {
@@ -59,6 +63,14 @@ public class Person {
 
     public void setMoneyBalance(int moneyBalance) {
         this.moneyBalance = moneyBalance;
+    }
+
+    public int deductMoney(int money) {
+        if (money > getMoneyBalance()) {
+            throw new IllegalArgumentException("Insufficient funds: Cannot deduct " + money + " from balance " + getMoneyBalance());
+        }
+        setMoneyBalance(getMoneyBalance() - money);
+        return getMoneyBalance();
     }
 
     public boolean isInstructor() {

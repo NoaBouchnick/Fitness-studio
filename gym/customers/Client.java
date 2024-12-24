@@ -12,6 +12,7 @@ public class Client extends Person {
     private List<String> notifications = new ArrayList<>();
     private List<Session> mySessions = new ArrayList<>();
     private ForumType clientType;
+    private int id;
 
 
     public Client(String name, int accountBalance, Gender gender, String data,
@@ -19,6 +20,7 @@ public class Client extends Person {
         super(name, accountBalance, gender, data);
         this.notifications = initilaize(notifications);
         this.mySessions = initilaize(mySessions);
+        this.id = getId();
     }
 
     private <T> List<T> initilaize(List<T> list) {
@@ -33,23 +35,8 @@ public class Client extends Person {
         this.mySessions.add(session);
     }
 
-    public List<Session> getMySessions() {
-        return mySessions;
-    }
-    public ForumType getClientType() {
-        return clientType;
-    }
-
     public List<String> getNotifications() {
         return Collections.unmodifiableList(notifications);
-    }
-
-    public int deductMoney(int money) {
-        if (money > getMoneyBalance()) {
-            throw new IllegalArgumentException("Insufficient funds: Cannot deduct " + money + " from balance " + getMoneyBalance());
-        }
-        setMoneyBalance(getMoneyBalance() - money);
-        return getMoneyBalance();
     }
 
 

@@ -15,7 +15,7 @@ import java.util.List;
 public class Secretary extends Person {
 
     private static List<Client> clients = new ArrayList<>();
-    private List<Instructor> instructors = new ArrayList<>();
+    private static List<Instructor> instructors = new ArrayList<>();
     private static List<Session> sessions = new ArrayList<>();
     private static List<String> actionsHistory = new ArrayList<>();
     private static   Secretary currentSecretary = null;
@@ -51,6 +51,10 @@ public class Secretary extends Person {
         return sessions;
     }
 
+    public static List<Instructor> getInstructors() {
+        return instructors;
+    }
+
     public static Secretary getCurrentSecretary() {
         return Gym.getInstance().getSecretary();
     }
@@ -79,6 +83,7 @@ public class Secretary extends Person {
             Client newClient = new Client(p.getName(), p.getMoneyBalance(), p.getGender(), p.getData(), new ArrayList<>(), new ArrayList<>());
             clients.add(newClient);
             actionsHistory.add("Registered new client: " + p.getName());
+            getIdCounter();
             return newClient;
 
         } catch (InvalidAgeException e) {
@@ -86,7 +91,6 @@ public class Secretary extends Person {
         } catch (DuplicateClientException e) {
             System.out.println("Error: The client is already registered");
         }
-
         return null;
     }
 
@@ -255,7 +259,6 @@ public class Secretary extends Person {
             int numOfSessions = instructor.getSessionsTaught().size();
             int hourlyWage = instructor.getHourlyWage();
 
-            // חישוב השכר של המדריך
             int salary = numOfSessions * hourlyWage;
             instructor.setMoneyBalance(instructor.getMoneyBalance() + salary);
 

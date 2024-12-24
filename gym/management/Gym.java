@@ -99,6 +99,17 @@ public class Gym {
         } else {
             builder.append("No clients available\n");
         }
+        // Employees Data
+        builder.append("\nEmployees Data:\n");
+
+        if (secretary != null) {
+            builder.append("ID: ").append(secretary.getId())
+                    .append(" | Name: ").append(secretary.getName())
+                    .append(" | Gender: ").append(secretary.getGender())
+                    .append(" | Birthday: ").append(secretary.getData())
+                    .append(" | Age: ").append(secretary.getAge())
+                    .append(" | Role: Secretary | Salary per Month: ").append(secretary.getSalary()).append("\n");
+        }
 
         // Sessions Data
         builder.append("\nSessions Data:\n");
@@ -114,7 +125,7 @@ public class Gym {
         } else {
             builder.append("No sessions available\n");
         }
-
         return builder.toString();
     }
+
 }
