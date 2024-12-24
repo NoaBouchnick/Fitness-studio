@@ -24,7 +24,13 @@ public class Secretary extends Person {
 
     public Secretary(String name, int wage, Gender gender, String date) {
         super(name, wage, gender, date);
-        this.salary = salary;
+        this.salary = wage;  // שימי לב לתיקון כאן
+    }
+
+    // בנאי "שדרוג" מתוך Person קיים (שומר על אותו ID)
+    public Secretary(Person existingPerson, int wage) {
+        super(existingPerson); // קורא לבנאי המוגן ב-Person ושומר על ה-ID
+        this.salary = wage;
     }
 
     public int getSalary() {
@@ -76,14 +82,13 @@ public class Secretary extends Person {
                 throw new InvalidAgeException("Client age must be 18 or older", p.getAge());
             }
             for (Client client : clients) {
-                if (client.equals(new Client(p.getName(), p.getMoneyBalance(), p.getGender(), p.getData(), new ArrayList<>(), new ArrayList<>()))) {
+                if (client.equals(new Client(p, new ArrayList<>(), new ArrayList<>()))) {
                     throw new DuplicateClientException("Client already registered", client);
                 }
             }
-            Client newClient = new Client(p.getName(), p.getMoneyBalance(), p.getGender(), p.getData(), new ArrayList<>(), new ArrayList<>());
+            Client newClient = new Client(p, new ArrayList<>(), new ArrayList<>());
             clients.add(newClient);
             actionsHistory.add("Registered new client: " + p.getName());
-            getIdCounter();
             return newClient;
 
         } catch (InvalidAgeException e) {
@@ -121,7 +126,7 @@ public class Secretary extends Person {
             if (sessions == null || sessions.isEmpty()) {
                 throw new IllegalArgumentException("Instructor must be qualified for at least one session.");
             }
-            Instructor newInstructor = new Instructor(p.getName(), p.getMoneyBalance(), p.getGender(), p.getData(), sessions, hourlyWage);
+            Instructor newInstructor = new Instructor(p, hourlyWage, sessions);
             instructors.add(newInstructor);
             actionsHistory.add("Hired new instructor: " + p.getName() + " with salary per hour: " + hourlyWage );
             return newInstructor;
@@ -269,14 +274,8 @@ public class Secretary extends Person {
             setMoneyBalance(getMoneyBalance() + secretarySalary);
 
         Gym gym = Gym.getInstance();
-        if (gym.getBalance() >= totalPayment) {
-            gym.setBalance(gym.getBalance() - totalPayment);
-            actionsHistory.add("Salaries have been paid to all employees");
-        } else {
-            actionsHistory.add("Failed to pay salaries: Not enough balance in the gym account.");
-            return 0;
-        }
-
+        gym.setBalance(gym.getBalance() - totalPayment);
+        actionsHistory.add("Salaries have been paid to all employees");
         return totalPayment;
     }
 
@@ -333,10 +332,13 @@ public class Secretary extends Person {
 
         actionsHistory.add("A message was sent to all gym clients: " + message);
     }
+
     @Override
     public String toString() {
         return "ID: " + getId() + " | Name: " + getName() + " | Gender: " + getGender() +
                 " | Birthday: " + getData() + " | Age: " + getAge() +
+                // הצגה של היתרה הנוכחית
+                " | Balance: " + getMoneyBalance() +
                 " | Salary per Month: " + salary;
     }
 }

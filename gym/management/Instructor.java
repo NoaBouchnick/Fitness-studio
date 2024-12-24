@@ -19,6 +19,13 @@ public class Instructor extends Person {
         this.hourlyWage = hourlyWage;
     }
 
+    public Instructor(Person existingPerson, int hourlyWage, List<SessionType> sessions) {
+        super(existingPerson); // קורא לבנאי המוגן ב-Person, משמר את ה-ID של existingPerson
+        this.hourlyWage = hourlyWage;
+        this.instructorSessions = sessions == null ? new ArrayList<>() : sessions;
+    }
+
+
     @Override
     public boolean isInstructor() {
         return true;
@@ -46,5 +53,15 @@ public class Instructor extends Person {
             }
         }
         return false;
+    }
+    @Override
+    public String toString() {
+        return "Instructor {" +
+                "ID: " + getId() +
+                ", name: " + getName() +
+                ", balance: " + getMoneyBalance() +
+                ", hourlyWage=" + hourlyWage +
+                ", sessionsTaught=" + sessionsTaught.size() +
+                '}';
     }
 }

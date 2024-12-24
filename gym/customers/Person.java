@@ -12,7 +12,7 @@ public class Person {
     private String data;
     private Gender gender;
     private int age;
-    private static int idCounter = 1112;
+    private static int idCounter = 1111;
     private int id;
 
 
@@ -22,7 +22,16 @@ public class Person {
         this.data = data;
         this.gender = gender;
         this.age = calculateAgeFromData(data);
-        this.id = idCounter;
+        this.id = getIdCounter();
+    }
+
+    protected Person(Person other) {
+        this.name = other.name;
+        this.moneyBalance = other.moneyBalance;
+        this.data = other.data;
+        this.gender = other.gender;
+        this.age = other.age;
+        this.id = other.id;  // חשוב: שומר על אותו ID!
     }
 
     public synchronized static int getIdCounter() {

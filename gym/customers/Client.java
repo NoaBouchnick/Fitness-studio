@@ -11,16 +11,24 @@ import java.util.Objects;
 public class Client extends Person {
     private List<String> notifications = new ArrayList<>();
     private List<Session> mySessions = new ArrayList<>();
-    private ForumType clientType;
-    private int id;
+
+
 
 
     public Client(String name, int accountBalance, Gender gender, String data,
                   List<String> notifications, List<Session> mySessions) {
-        super(name, accountBalance, gender, data);
+        super(name, accountBalance, gender, data);  // <-- מקצה ID חדש
         this.notifications = initilaize(notifications);
         this.mySessions = initilaize(mySessions);
-        this.id = getId();
+    }
+
+    // בנאי שמשדרג מ-Person קיים (שומר ID קיים)
+    public Client(Person existingPerson,
+                  List<String> notifications,
+                  List<Session> mySessions) {
+        super(existingPerson); // <-- קורא לבנאי המוגן ב-Person, ושם מעתיק את ה-ID
+        this.notifications = initilaize(notifications);
+        this.mySessions = initilaize(mySessions);
     }
 
     private <T> List<T> initilaize(List<T> list) {

@@ -42,23 +42,18 @@ public class Gym {
         return secretary;
     }
 
-    public void setSecretary(Person person, int balance) {
+    public void setSecretary(Person person, int secretarySalary) {
         try {
             if (this.secretary != null) {
                 this.secretary.deactivate();
             }
+
             if (person instanceof Secretary) {
                 this.secretary = (Secretary) person;
             } else {
-                this.secretary = new Secretary(
-                        person.getName(),
-                        balance,
-                        person.getGender(),
-                        person.getData()
-                );
+                this.secretary = new Secretary(person, secretarySalary);
             }
             Secretary.setCurrentSecretary(this.secretary);
-            this.balance = balance;
 
             this.secretary.addActionToHistory(
                     "A new secretary has started working at the gym: " + this.secretary.getName()
@@ -75,15 +70,16 @@ public class Gym {
 
         // Gym Details
         builder.append("Gym Name: ").append(name).append("\n");
-        builder.append("Gym Secretary: ");
 
+        builder.append("Gym Secretary: ");
         if (secretary != null) {
             builder.append("ID: ").append(secretary.getId())
                     .append(" | Name: ").append(secretary.getName())
                     .append(" | Gender: ").append(secretary.getGender())
                     .append(" | Birthday: ").append(secretary.getData())
                     .append(" | Age: ").append(secretary.getAge())
-                    .append(" | Role: Secretary | Salary per Month: ").append(secretary.getSalary());
+                    .append(" | Role: Secretary | Salary per Month: ")
+                    .append(secretary.getSalary());
         } else {
             builder.append("None");
         }
@@ -99,33 +95,50 @@ public class Gym {
         } else {
             builder.append("No clients available\n");
         }
+
         // Employees Data
         builder.append("\nEmployees Data:\n");
-
         if (secretary != null) {
-            builder.append("ID: ").append(secretary.getId())
-                    .append(" | Name: ").append(secretary.getName())
-                    .append(" | Gender: ").append(secretary.getGender())
-                    .append(" | Birthday: ").append(secretary.getData())
-                    .append(" | Age: ").append(secretary.getAge())
-                    .append(" | Role: Secretary | Salary per Month: ").append(secretary.getSalary()).append("\n");
+            // קודם מציגים את המזכירה
+            builder.append(secretary.toString()).append("\n");
+
+            // ואז מציגים את המדריכים
+            for (Instructor i : Secretary.getInstructors()) {
+                builder.append(i.toString()).append("\n");
+            }
         }
 
         // Sessions Data
         builder.append("\nSessions Data:\n");
         if (secretary != null && secretary.getSessions() != null && !secretary.getSessions().isEmpty()) {
             for (Session session : secretary.getSessions()) {
+                // כאן משנים את הצגת ה־Session כך ש:
+                // - Date יוצג בפורמט dd-MM-yyyy HH:mm
+                // - Instructor יוצג רק בשם
+                // - Participants יהיה גודל ה־clientsInSession.size() / maxCapacity
+                String formattedDate = session.getSessionDate()
+                        .format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
+
+                // instructor.getName() במקום instructor.toString()
+                String instructorName = session.getInstructor().getName();
+
+                // מספר המשתתפים בפועל
+                int numberOfParticipants = session.getClientsInSession().size();
+
                 builder.append("Session Type: ").append(session.getSessionType())
-                        .append(" | Date: ").append(session.getSessionDate())
+                        .append(" | Date: ").append(formattedDate)
                         .append(" | Forum: ").append(session.getForumType())
-                        .append(" | Instructor: ").append(session.getInstructor())
-                        .append(" | Participants: ").append(session.getPrice())
-                        .append("/").append(session.getMaxCapacity()).append("\n");
+                        .append(" | Instructor: ").append(instructorName)
+                        .append(" | Participants: ")
+                        .append(numberOfParticipants)
+                        .append("/")
+                        .append(session.getMaxCapacity())
+                        .append("\n");
             }
         } else {
             builder.append("No sessions available\n");
         }
+
         return builder.toString();
     }
-
 }
