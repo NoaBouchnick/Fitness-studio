@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class Session {
 
     private final SessionType sessionType;
-    private final LocalDateTime sessionDate; // changed from String to LocalDateTime
+    private final LocalDateTime sessionDate;
     private final ForumType forumType;
     private final Instructor instructor;
     private final List<Client> clientsInSession;

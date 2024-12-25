@@ -58,7 +58,6 @@ public class Instructor extends Person {
 
     @Override
     public String toString() {
-        // יוצרים מחרוזת של הקלאסים המוסמכים, למשל: "ThaiBoxing, MachinePilates"
         String certifiedClasses = instructorSessions.stream()
                 .map(Enum::name)
                 .collect(Collectors.joining(", "));
@@ -69,8 +68,8 @@ public class Instructor extends Person {
                 " | Birthday: " + getData() +
                 " | Age: " + getAge() +
                 " | Balance: " + getMoneyBalance() +
-                " | Role: Instructor" +                       // Role קבוע: "Instructor"
-                " | Salary per Hour: " + getHourlyWage() +     // hourlyWage
-                " | Certified Classes: " + certifiedClasses;   // למשל "ThaiBoxing, MachinePilates"
+                " | Role: Instructor" +
+                " | Salary per Hour: " + getHourlyWage() +
+                " | Certified Classes: " + certifiedClasses;
     }
 }

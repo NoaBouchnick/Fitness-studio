@@ -24,12 +24,11 @@ public class Secretary extends Person {
 
     public Secretary(String name, int wage, Gender gender, String date) {
         super(name, wage, gender, date);
-        this.salary = wage;  // שימי לב לתיקון כאן
+        this.salary = wage;
     }
 
-    // בנאי "שדרוג" מתוך Person קיים (שומר על אותו ID)
     public Secretary(Person existingPerson, int wage) {
-        super(existingPerson); // קורא לבנאי המוגן ב-Person ושומר על ה-ID
+        super(existingPerson);
         this.salary = wage;
     }
 
@@ -337,7 +336,6 @@ public class Secretary extends Person {
     public String toString() {
         return "ID: " + getId() + " | Name: " + getName() + " | Gender: " + getGender() +
                 " | Birthday: " + getData() + " | Age: " + getAge() +
-                // הצגה של היתרה הנוכחית
                 " | Balance: " + getMoneyBalance() +
                 " | Role: Secretary"  +
                 " | Salary per Month: " + salary;

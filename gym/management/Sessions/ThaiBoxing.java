@@ -1,6 +1,5 @@
 package gym.management.Sessions;
 
-import gym.customers.Client;
 import gym.management.Instructor;
 
 public class ThaiBoxing extends Session {

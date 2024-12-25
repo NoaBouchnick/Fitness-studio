@@ -68,7 +68,6 @@ public class Gym {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        // Gym Details
         builder.append("Gym Name: ").append(name).append("\n");
 
         builder.append("Gym Secretary: ");
@@ -87,7 +86,6 @@ public class Gym {
 
         builder.append("\nGym Balance: ").append(balance).append("\n");
 
-        // Clients Data
         builder.append("\nClients Data:\n");
         if (secretary != null && !secretary.getClients().isEmpty()) {
             for (Client client : secretary.getClients()) {
@@ -97,15 +95,11 @@ public class Gym {
             builder.append("No clients available\n");
         }
 
-// Employees Data
         builder.append("\nEmployees Data:\n");
         if (secretary != null) {
-            // קודם מדפיסים את המדריכים
             for (Instructor i : Secretary.getInstructors()) {
                 builder.append(i.toString()).append("\n");
             }
-
-            // ואז מציגים את המזכירה
             builder.append(secretary.toString()).append("\n");
         }
 
@@ -117,10 +111,8 @@ public class Gym {
                 String formattedDate = session.getSessionDate()
                         .format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
 
-                // instructor.getName() במקום instructor.toString()
                 String instructorName = session.getInstructor().getName();
 
-                // מספר המשתתפים בפועל
                 int numberOfParticipants = session.getClientsInSession().size();
 
                 builder.append("Session Type: ").append(session.getSessionType())

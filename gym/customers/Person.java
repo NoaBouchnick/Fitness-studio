@@ -12,7 +12,6 @@ public class Person {
 
     private static Map<Integer, Integer> balancesMap = new HashMap<>();
     private String name;
-//    private int moneyBalance;
     private String data;
     private Gender gender;
     private int age;
@@ -26,8 +25,8 @@ public class Person {
         this.gender = gender;
         this.age = calculateAgeFromData(data);
 
-        this.id = getIdCounter();  // ניצור ID חדש
-        balancesMap.put(this.id, initialBalance); // מגדירים במפה את היתרה ההתחלתית
+        this.id = getIdCounter();
+        balancesMap.put(this.id, initialBalance);
     }
 
     protected Person(Person other) {
@@ -35,9 +34,7 @@ public class Person {
         this.data = other.data;
         this.gender = other.gender;
         this.age = other.age;
-        this.id = other.id; // מעתיקים את ה-ID
-
-        // לא נוגעים במפה balancesMap.put(...) כי כבר יש ערך תחת ה-ID הזה
+        this.id = other.id;
     }
 
     public synchronized static int getIdCounter() {
@@ -58,7 +55,6 @@ public class Person {
 
 
     public int getMoneyBalance() {
-        // נקרא לערך מהמפה לפי ה-ID
         return balancesMap.getOrDefault(this.id, 0);
     }
 
@@ -101,7 +97,6 @@ public class Person {
         if (this == o) return true;
         if (!(o instanceof Person)) return false;
         Person person = (Person) o;
-        // שימי לב, כיוון שכעת moneyBalance נמצא במפה ולא בשדה, אפשר להשוות לפי getMoneyBalance().
         return getMoneyBalance() == person.getMoneyBalance() &&
                 Objects.equals(name, person.name) &&
                 Objects.equals(data, person.data) &&
