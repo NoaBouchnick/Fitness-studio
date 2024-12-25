@@ -4,11 +4,15 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Person {
+
+    private static Map<Integer, Integer> balancesMap = new HashMap<>();
     private String name;
-    private int moneyBalance;
+//    private int moneyBalance;
     private String data;
     private Gender gender;
     private int age;
@@ -16,31 +20,33 @@ public class Person {
     private int id;
 
 
-    public Person(String name, int moneyBalance, Gender gender, String data) {
+    public Person(String name, int initialBalance, Gender gender, String data) {
         this.name = name;
-        this.moneyBalance = moneyBalance;
         this.data = data;
         this.gender = gender;
         this.age = calculateAgeFromData(data);
-        this.id = getIdCounter();
+
+        this.id = getIdCounter();  // ניצור ID חדש
+        balancesMap.put(this.id, initialBalance); // מגדירים במפה את היתרה ההתחלתית
     }
 
     protected Person(Person other) {
         this.name = other.name;
-        this.moneyBalance = other.moneyBalance;
         this.data = other.data;
         this.gender = other.gender;
         this.age = other.age;
-        this.id = other.id;  // חשוב: שומר על אותו ID!
+        this.id = other.id; // מעתיקים את ה-ID
+
+        // לא נוגעים במפה balancesMap.put(...) כי כבר יש ערך תחת ה-ID הזה
     }
 
     public synchronized static int getIdCounter() {
         return idCounter++;
     }
-
     public int getId() {
         return id;
     }
+
 
     private int calculateAgeFromData(String data) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -52,7 +58,12 @@ public class Person {
 
 
     public int getMoneyBalance() {
-        return moneyBalance;
+        // נקרא לערך מהמפה לפי ה-ID
+        return balancesMap.getOrDefault(this.id, 0);
+    }
+
+    public void setMoneyBalance(int newBalance) {
+        balancesMap.put(this.id, newBalance);
     }
 
     public String getData() {
@@ -70,16 +81,14 @@ public class Person {
         return age;
     }
 
-    public void setMoneyBalance(int moneyBalance) {
-        this.moneyBalance = moneyBalance;
-    }
-
-    public int deductMoney(int money) {
-        if (money > getMoneyBalance()) {
-            throw new IllegalArgumentException("Insufficient funds: Cannot deduct " + money + " from balance " + getMoneyBalance());
+    public void deductMoney(int amount) {
+        int currentBalance = getMoneyBalance();
+        if (amount > currentBalance) {
+            throw new IllegalArgumentException(
+                    "Insufficient funds: Cannot deduct " + amount + " from balance " + currentBalance
+            );
         }
-        setMoneyBalance(getMoneyBalance() - money);
-        return getMoneyBalance();
+        setMoneyBalance(currentBalance - amount);
     }
 
     public boolean isInstructor() {
@@ -90,21 +99,25 @@ public class Person {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Person)) return false;
         Person person = (Person) o;
-        return moneyBalance == person.moneyBalance && Objects.equals(name, person.name) && Objects.equals(data, person.data) && gender == person.gender;
+        // שימי לב, כיוון שכעת moneyBalance נמצא במפה ולא בשדה, אפשר להשוות לפי getMoneyBalance().
+        return getMoneyBalance() == person.getMoneyBalance() &&
+                Objects.equals(name, person.name) &&
+                Objects.equals(data, person.data) &&
+                gender == person.gender;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, moneyBalance, data, gender);
+        return Objects.hash(name, getMoneyBalance(), data, gender);
     }
 
     @Override
     public String toString() {
         return "gym.customers.Person{" +
                 "name='" + name + '\'' +
-                ", balance=" + moneyBalance +
+                ", balance=" + getMoneyBalance() +
                 ", data=" + data +
                 ", gender=" + gender +
                 '}';

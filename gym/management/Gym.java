@@ -78,6 +78,7 @@ public class Gym {
                     .append(" | Gender: ").append(secretary.getGender())
                     .append(" | Birthday: ").append(secretary.getData())
                     .append(" | Age: ").append(secretary.getAge())
+                    .append(" | Balance: ").append(secretary.getMoneyBalance())
                     .append(" | Role: Secretary | Salary per Month: ")
                     .append(secretary.getSalary());
         } else {
@@ -96,26 +97,23 @@ public class Gym {
             builder.append("No clients available\n");
         }
 
-        // Employees Data
+// Employees Data
         builder.append("\nEmployees Data:\n");
         if (secretary != null) {
-            // קודם מציגים את המזכירה
-            builder.append(secretary.toString()).append("\n");
-
-            // ואז מציגים את המדריכים
+            // קודם מדפיסים את המדריכים
             for (Instructor i : Secretary.getInstructors()) {
                 builder.append(i.toString()).append("\n");
             }
+
+            // ואז מציגים את המזכירה
+            builder.append(secretary.toString()).append("\n");
         }
 
         // Sessions Data
         builder.append("\nSessions Data:\n");
         if (secretary != null && secretary.getSessions() != null && !secretary.getSessions().isEmpty()) {
             for (Session session : secretary.getSessions()) {
-                // כאן משנים את הצגת ה־Session כך ש:
-                // - Date יוצג בפורמט dd-MM-yyyy HH:mm
-                // - Instructor יוצג רק בשם
-                // - Participants יהיה גודל ה־clientsInSession.size() / maxCapacity
+
                 String formattedDate = session.getSessionDate()
                         .format(java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
 

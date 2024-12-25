@@ -7,6 +7,7 @@ import gym.management.Sessions.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Instructor extends Person {
     private final int hourlyWage;
@@ -20,7 +21,7 @@ public class Instructor extends Person {
     }
 
     public Instructor(Person existingPerson, int hourlyWage, List<SessionType> sessions) {
-        super(existingPerson); // קורא לבנאי המוגן ב-Person, משמר את ה-ID של existingPerson
+        super(existingPerson);
         this.hourlyWage = hourlyWage;
         this.instructorSessions = sessions == null ? new ArrayList<>() : sessions;
     }
@@ -54,14 +55,22 @@ public class Instructor extends Person {
         }
         return false;
     }
+
     @Override
     public String toString() {
-        return "Instructor {" +
-                "ID: " + getId() +
-                ", name: " + getName() +
-                ", balance: " + getMoneyBalance() +
-                ", hourlyWage=" + hourlyWage +
-                ", sessionsTaught=" + sessionsTaught.size() +
-                '}';
+        // יוצרים מחרוזת של הקלאסים המוסמכים, למשל: "ThaiBoxing, MachinePilates"
+        String certifiedClasses = instructorSessions.stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(", "));
+
+        return "ID: " + getId() +
+                " | Name: " + getName() +
+                " | Gender: " + getGender() +
+                " | Birthday: " + getData() +
+                " | Age: " + getAge() +
+                " | Balance: " + getMoneyBalance() +
+                " | Role: Instructor" +                       // Role קבוע: "Instructor"
+                " | Salary per Hour: " + getHourlyWage() +     // hourlyWage
+                " | Certified Classes: " + certifiedClasses;   // למשל "ThaiBoxing, MachinePilates"
     }
 }

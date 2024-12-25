@@ -339,6 +339,7 @@ public class Secretary extends Person {
                 " | Birthday: " + getData() + " | Age: " + getAge() +
                 // הצגה של היתרה הנוכחית
                 " | Balance: " + getMoneyBalance() +
+                " | Role: Secretary"  +
                 " | Salary per Month: " + salary;
     }
 }
