@@ -263,9 +263,9 @@ public class Secretary extends Person {
 
             totalPayment += salary;
         }
-            int secretarySalary = getSalary();
-            totalPayment += secretarySalary;
-            setMoneyBalance(getMoneyBalance() + secretarySalary);
+        int secretarySalary = getSalary();
+        totalPayment += secretarySalary;
+        setMoneyBalance(getMoneyBalance() + secretarySalary);
 
         Gym gym = Gym.getInstance();
         gym.setBalance(gym.getBalance() - totalPayment);
@@ -298,7 +298,6 @@ public class Secretary extends Person {
         }
 
         try {
-            // פירמוט התאריך
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate parsedDate = LocalDate.parse(date, inputFormatter);
