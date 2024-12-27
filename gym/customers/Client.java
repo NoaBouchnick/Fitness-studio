@@ -1,6 +1,6 @@
 package gym.customers;
 
-import gym.management.Sessions.ForumType;
+import gym.management.Observer;
 import gym.management.Sessions.Session;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Client extends Person {
+public class Client extends Person implements Observer {
     private List<String> notifications = new ArrayList<>();
     private List<Session> mySessions = new ArrayList<>();
 
@@ -59,4 +59,8 @@ public class Client extends Person {
                 " | Balance: " + getMoneyBalance();
     }
 
+    @Override
+    public void update(String message) {
+        addNotification(message);
+    }
 }

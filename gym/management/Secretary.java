@@ -12,13 +12,13 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-public class Secretary extends Person {
+public class Secretary extends Person implements Subject {
 
     private static List<Client> clients = new ArrayList<>();
     private static List<Instructor> instructors = new ArrayList<>();
     private static List<Session> sessions = new ArrayList<>();
     private static List<String> actionsHistory = new ArrayList<>();
-    private static   Secretary currentSecretary = null;
+    private static Secretary currentSecretary = null;
     private boolean isActive = true;
     private int salary;
 
@@ -82,6 +82,7 @@ public class Secretary extends Person {
             }
             Client newClient = new Client(p, new ArrayList<>(), new ArrayList<>());
             clients.add(newClient);
+            addObserver(newClient);
             actionsHistory.add("Registered new client: " + p.getName());
             return newClient;
 
@@ -104,6 +105,7 @@ public class Secretary extends Person {
             clients.remove(c);
             c.addNotification("You have been unregistered from the gym.\n");
             actionsHistory.add("Unregistered client: " + c.getName());
+            removeObserver(c);
         } catch (ClientNotRegisteredException e) {
             System.out.println("Error: " + e.getMessage());
         } catch (Exception e) {
@@ -284,8 +286,8 @@ public class Secretary extends Person {
             return;
         }
 
-        for (Client client : session.getClientsInSession()) {
-            client.addNotification(message);
+        for (Observer observer : session.getClientsInSession()) {
+            observer.update(message);
         }
 
         actionsHistory.add("A message was sent to everyone registered for session "
@@ -303,8 +305,8 @@ public class Secretary extends Person {
             LocalDate parsedDate = LocalDate.parse(date, inputFormatter);
             String formattedDate = parsedDate.format(outputFormatter);
 
-            for (Client client : clients) {
-                client.addNotification(message);
+            for (Observer observer : observers) {
+                observer.update(message);
             }
 
             actionsHistory.add("A message was sent to everyone registered for a session on " + formattedDate + " : " + message);
@@ -319,10 +321,9 @@ public class Secretary extends Person {
             return;
         }
 
-        for (Client client : clients) {
-            client.addNotification(message);
+        for (Observer observer : observers) {
+            observer.update(message);
         }
-
         actionsHistory.add("A message was sent to all gym clients: " + message);
     }
 

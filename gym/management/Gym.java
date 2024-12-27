@@ -103,7 +103,6 @@ public class Gym {
             builder.append(secretary.toString()).append("\n");
         }
 
-        // Sessions Data
         builder.append("\nSessions Data:\n");
         if (secretary != null && secretary.getSessions() != null && !secretary.getSessions().isEmpty()) {
             for (Session session : secretary.getSessions()) {
