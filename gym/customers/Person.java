@@ -24,7 +24,6 @@ public class Person {
         this.data = data;
         this.gender = gender;
         this.age = calculateAgeFromData(data);
-
         this.id = getIdCounter();
         balancesMap.put(this.id, initialBalance);
     }

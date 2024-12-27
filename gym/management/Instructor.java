@@ -14,12 +14,6 @@ public class Instructor extends Person {
     private List<SessionType> instructorSessions = new ArrayList<>();
     private List<Session> sessionsTaught = new ArrayList<>();
 
-    public Instructor(String name, int moneyBalance, Gender gender, String data, List<SessionType> instructorSessions, int hourlyWage) {
-        super(name, moneyBalance, gender, data);
-        this.instructorSessions = instructorSessions == null ? new ArrayList<>() : instructorSessions;
-        this.hourlyWage = hourlyWage;
-    }
-
     public Instructor(Person existingPerson, int hourlyWage, List<SessionType> sessions) {
         super(existingPerson);
         this.hourlyWage = hourlyWage;

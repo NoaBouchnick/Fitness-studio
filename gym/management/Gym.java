@@ -129,6 +129,6 @@ public class Gym {
             builder.append("No sessions available\n");
         }
 
-        return builder.toString();
+        return builder.toString().trim();
     }
 }

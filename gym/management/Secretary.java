@@ -22,11 +22,6 @@ public class Secretary extends Person {
     private boolean isActive = true;
     private int salary;
 
-    public Secretary(String name, int wage, Gender gender, String date) {
-        super(name, wage, gender, date);
-        this.salary = wage;
-    }
-
     public Secretary(Person existingPerson, int wage) {
         super(existingPerson);
         this.salary = wage;

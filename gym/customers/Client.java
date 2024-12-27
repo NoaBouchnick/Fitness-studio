@@ -13,13 +13,6 @@ public class Client extends Person {
     private List<Session> mySessions = new ArrayList<>();
 
 
-    public Client(String name, int accountBalance, Gender gender, String data,
-                  List<String> notifications, List<Session> mySessions) {
-        super(name, accountBalance, gender, data);
-        this.notifications = initilaize(notifications);
-        this.mySessions = initilaize(mySessions);
-    }
-
     public Client(Person existingPerson, List<String> notifications, List<Session> mySessions) {
         super(existingPerson);
         this.notifications = initilaize(notifications);
